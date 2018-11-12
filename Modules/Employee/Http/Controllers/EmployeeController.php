@@ -122,6 +122,12 @@ class EmployeeController extends Controller
         return redirect()->back();
     }
 
+    /**
+     * Attentdance Details
+     * @param $emp_id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+
     public function attendanceDetails($emp_id)
     {
         $emp_id = Encryption::decodeId($emp_id);
