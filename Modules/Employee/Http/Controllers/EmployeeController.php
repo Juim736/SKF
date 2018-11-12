@@ -3,14 +3,11 @@
 namespace Modules\Employee\Http\Controllers;
 
 use App\Libraries\Encryption;
-use App\User;
 use Carbon\Carbon;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Modules\Employee\Entities\Attendance;
 use Modules\Employee\Entities\Employee;
 
@@ -79,34 +76,39 @@ class EmployeeController extends Controller
     }
 
 
-    public function allEmployee(){
+    public function allEmployee()
+    {
         return view('employee::all-employee');
     }
 
-    public function employeeAttendance(){
+    public function employeeAttendance()
+    {
         return view('employee::employee-attendance');
     }
-    public function employeeLogOff(Request $request){
+
+    public function employeeLogOff(Request $request)
+    {
         $user_id = Sentinel::getUser()->id;
-        $employee_id = Employee::leftjoin('users','employees.user_id','=','users.id')->first(['employees.id']);
+        $employee_id = Employee::leftjoin('users', 'employees.user_id', '=', 'users.id')->first(['employees.id']);
         $responseData = [
             'responseCode' => 0,
-            'message' => 'Somthing Went Wrong'
+            'message' => 'Something Went Wrong'
         ];
 
-        $isUpdate =  Attendance::firstOrNew(['employee_id' => $employee_id])
-                                ->whereDate('created_at', Carbon::today())
-                                ->update(['exit_time' => Carbon::now()]);
-        if($isUpdate){
-           $responseData = [
+        $isUpdate = Attendance::firstOrNew(['employee_id' => $employee_id])
+            ->whereDate('created_at', Carbon::today())
+            ->update(['exit_time' => Carbon::now()]);
+        if ($isUpdate) {
+            $responseData = [
                 'responseCode' => 1,
                 'message' => 'Successfully Update'
-           ]; 
+            ];
         }
         return response()->json($responseData);
     }
 
-    public function employeeAdd($uId){
+    public function employeeAdd($uId)
+    {
         $uId = Encryption::decodeId($uId);
         $objEmployee = new Employee();
         $objEmployee->user_id = $uId;
@@ -120,14 +122,15 @@ class EmployeeController extends Controller
         return redirect()->back();
     }
 
-    public function attendanceDetails($emp_id){
-       $emp_id = Encryption::decodeId($emp_id);
-       $attenDancesDetails = Attendance::leftjoin('employees','attendances.employee_id','=','employees.id')
-                             ->leftjoin('users','employees.user_id','=','users.id')
-                             ->whereMonth('attendances.created_at', '=', Carbon::now()->month)
-                             ->where('attendances.employee_id',$emp_id)
-                             ->orderBy('attendances.entry_time', 'desc')
-                             ->get(['users.first_name','users.last_name','attendances.entry_time','attendances.exit_time']);
-        return view('employee::attendance-details',compact('attenDancesDetails'));
+    public function attendanceDetails($emp_id)
+    {
+        $emp_id = Encryption::decodeId($emp_id);
+        $attenDancesDetails = Attendance::leftjoin('employees', 'attendances.employee_id', '=', 'employees.id')
+            ->leftjoin('users', 'employees.user_id', '=', 'users.id')
+            ->whereMonth('attendances.created_at', '=', Carbon::now()->month)
+            ->where('attendances.employee_id', $emp_id)
+            ->orderBy('attendances.entry_time', 'desc')
+            ->get(['users.first_name', 'users.last_name', 'attendances.entry_time', 'attendances.exit_time']);
+        return view('employee::attendance-details', compact('attenDancesDetails'));
     }
 }
