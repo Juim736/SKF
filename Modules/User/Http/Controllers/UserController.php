@@ -9,6 +9,7 @@ use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Yajra\DataTables\Contracts\DataTable;
 
 class UserController extends Controller
 {
@@ -82,7 +83,7 @@ class UserController extends Controller
 
     public function getList(){
         $allUserList = User::all();
-        Datatable::of($list)->make(ture);   
+        Datatable::of($allUserList)->make(ture);
     }
     public function statusChangeUser($id){
         $id = Encryption::decodeid($id);
@@ -90,8 +91,8 @@ class UserController extends Controller
         if($isActive && $isActive->completed){
             return redirect()->back()->with('success','Allready Active This User');
         }
-        $activaeUser = $this->activate($id,$isActive->code);
-        if(!$activaeUser){
+        $activeUser = $this->activate($id,$isActive->code);
+        if(!$activeUser){
 
         }
         return redirect()->back()->with('success','This user is active Now');
