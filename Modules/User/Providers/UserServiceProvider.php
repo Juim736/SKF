@@ -29,11 +29,11 @@ class UserServiceProvider extends ServiceProvider
         $this->registerFactories();
         $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
 
-        View::composer('user::all-user',function($view){
-            $allUser = User::leftjoin('activations','users.id', '=', 'activations.user_id')
+        View::composer('user::all-user', function ($view) {
+            $allUser = User::leftjoin('activations', 'users.id', '=', 'activations.user_id')
                 ->orderby('users.created_at', 'desc')
-              ->get(['users.*','activations.completed']);
-            $view->with('allUser',$allUser);
+                ->get(['users.*', 'activations.completed']);
+            $view->with('allUser', $allUser);
         });
     }
 
@@ -55,10 +55,10 @@ class UserServiceProvider extends ServiceProvider
     protected function registerConfig()
     {
         $this->publishes([
-            __DIR__.'/../Config/config.php' => config_path('user.php'),
+            __DIR__ . '/../Config/config.php' => config_path('user.php'),
         ], 'config');
         $this->mergeConfigFrom(
-            __DIR__.'/../Config/config.php', 'user'
+            __DIR__ . '/../Config/config.php', 'user'
         );
     }
 
@@ -71,11 +71,11 @@ class UserServiceProvider extends ServiceProvider
     {
         $viewPath = resource_path('views/modules/user');
 
-        $sourcePath = __DIR__.'/../Resources/views';
+        $sourcePath = __DIR__ . '/../Resources/views';
 
         $this->publishes([
             $sourcePath => $viewPath
-        ],'views');
+        ], 'views');
 
         $this->loadViewsFrom(array_merge(array_map(function ($path) {
             return $path . '/modules/user';
@@ -94,18 +94,18 @@ class UserServiceProvider extends ServiceProvider
         if (is_dir($langPath)) {
             $this->loadTranslationsFrom($langPath, 'user');
         } else {
-            $this->loadTranslationsFrom(__DIR__ .'/../Resources/lang', 'user');
+            $this->loadTranslationsFrom(__DIR__ . '/../Resources/lang', 'user');
         }
     }
 
     /**
      * Register an additional directory of factories.
-     * 
+     *
      * @return void
      */
     public function registerFactories()
     {
-        if (! app()->environment('production')) {
+        if (!app()->environment('production')) {
             app(Factory::class)->load(__DIR__ . '/../Database/factories');
         }
     }

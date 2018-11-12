@@ -76,32 +76,37 @@ class UserController extends Controller
     }
 
 
-    public function allUser(){
+    public function allUser()
+    {
         // return "jim";
         return view('user::all-user');
     }
 
-    public function getList(){
+    public function getList()
+    {
         $allUserList = User::all();
         Datatable::of($allUserList)->make(ture);
     }
-    public function statusChangeUser($id){
+
+    public function statusChangeUser($id)
+    {
         $id = Encryption::decodeid($id);
-        $isActive = Activation::where('user_id',$id)->first();
-        if($isActive && $isActive->completed){
-            return redirect()->back()->with('success','Allready Active This User');
+        $isActive = Activation::where('user_id', $id)->first();
+        if ($isActive && $isActive->completed) {
+            return redirect()->back()->with('success', 'Allready Active This User');
         }
-        $activeUser = $this->activate($id,$isActive->code);
-        if(!$activeUser){
+        $activeUser = $this->activate($id, $isActive->code);
+        if (!$activeUser) {
 
         }
-        return redirect()->back()->with('success','This user is active Now');
+        return redirect()->back()->with('success', 'This user is active Now');
     }
 
-    private function activate($id,$code){
+    private function activate($id, $code)
+    {
         $user = User::whereId($id)->first();
         $sentinelUser = Sentinel::findById($user->id);
-        if(Activation::complete($sentinelUser,$code)){
+        if (Activation::complete($sentinelUser, $code)) {
             return true;
         }
         return false;

@@ -35,34 +35,34 @@ class EmployeeServiceProvider extends ServiceProvider
 
         // All Employee Show
 
-        View::composer('employee::all-employee',function($view){
-            $allEmployee = Employee::leftjoin('users','employees.user_id',  '=', 'users.id')
+        View::composer('employee::all-employee', function ($view) {
+            $allEmployee = Employee::leftjoin('users', 'employees.user_id', '=', 'users.id')
                 ->orderby('employees.created_at', 'desc')
-              ->get(['employees.*','users.first_name','users.last_name','users.email']);
-            $view->with('allEmployee',$allEmployee);
+                ->get(['employees.*', 'users.first_name', 'users.last_name', 'users.email']);
+            $view->with('allEmployee', $allEmployee);
         });
 
 
         // For Add Employee
 
-        View::composer('employee::all-employee',function($view){
-            $pendingEmployee = User::whereNotIn('id',[ DB::raw('select user_id from employees') ])
-                        ->orderBy('created_at','desc')
-                        ->get(['id','email','first_name','last_name']);
-            $view->with('pendingEmployee',$pendingEmployee);
+        View::composer('employee::all-employee', function ($view) {
+            $pendingEmployee = User::whereNotIn('id', [DB::raw('select user_id from employees')])
+                ->orderBy('created_at', 'desc')
+                ->get(['id', 'email', 'first_name', 'last_name']);
+            $view->with('pendingEmployee', $pendingEmployee);
         });
 
 
         // All Employee Attendance Show
 
-        View::composer('employee::employee-attendance',function($view){
-            $empAttendance = Attendance::whereMonth('created_at','=', Carbon::now()->month)
-                        // ->whereTime('entry_time', '<=' ,'14:00:00')
-                        ->where('exit_time', '!=', null)
-                       ->select('employee_id', DB::raw('count(*) as total'))
-                      ->groupBy('employee_id')
-                      ->get();
-            $view->with('empAttendance',$empAttendance);
+        View::composer('employee::employee-attendance', function ($view) {
+            $empAttendance = Attendance::whereMonth('created_at', '=', Carbon::now()->month)
+                // ->whereTime('entry_time', '<=' ,'14:00:00')
+                ->where('exit_time', '!=', null)
+                ->select('employee_id', DB::raw('count(*) as total'))
+                ->groupBy('employee_id')
+                ->get();
+            $view->with('empAttendance', $empAttendance);
         });
 
     }
@@ -85,10 +85,10 @@ class EmployeeServiceProvider extends ServiceProvider
     protected function registerConfig()
     {
         $this->publishes([
-            __DIR__.'/../Config/config.php' => config_path('employee.php'),
+            __DIR__ . '/../Config/config.php' => config_path('employee.php'),
         ], 'config');
         $this->mergeConfigFrom(
-            __DIR__.'/../Config/config.php', 'employee'
+            __DIR__ . '/../Config/config.php', 'employee'
         );
     }
 
@@ -101,11 +101,11 @@ class EmployeeServiceProvider extends ServiceProvider
     {
         $viewPath = resource_path('views/modules/employee');
 
-        $sourcePath = __DIR__.'/../Resources/views';
+        $sourcePath = __DIR__ . '/../Resources/views';
 
         $this->publishes([
             $sourcePath => $viewPath
-        ],'views');
+        ], 'views');
 
         $this->loadViewsFrom(array_merge(array_map(function ($path) {
             return $path . '/modules/employee';
@@ -124,18 +124,18 @@ class EmployeeServiceProvider extends ServiceProvider
         if (is_dir($langPath)) {
             $this->loadTranslationsFrom($langPath, 'employee');
         } else {
-            $this->loadTranslationsFrom(__DIR__ .'/../Resources/lang', 'employee');
+            $this->loadTranslationsFrom(__DIR__ . '/../Resources/lang', 'employee');
         }
     }
 
     /**
      * Register an additional directory of factories.
-     * 
+     *
      * @return void
      */
     public function registerFactories()
     {
-        if (! app()->environment('production')) {
+        if (!app()->environment('production')) {
             app(Factory::class)->load(__DIR__ . '/../Database/factories');
         }
     }
