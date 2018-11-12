@@ -25,6 +25,13 @@
             </a>
           </li>
           
+          <li class="nav-item ">
+            <a class="nav-link" href="{{url('user/user-all')}}">
+              <i class="material-icons">person</i>
+              <p>Users</p>
+            </a>
+          </li>
+          
 
           <li class="nav-item ">
             <a class="nav-link" href="./tables.html">
