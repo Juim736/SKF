@@ -33,14 +33,14 @@
                     </a>
                 </li>
             @endif
-
+            @if(Sentinel::getUser()->roles()->first()->slug == 'accountant' )
             <li class="nav-item ">
                 <a class="nav-link" href="{{ url('account/account') }}">
                     <i class="material-icons">content_paste</i>
                     <p>Account</p>
                 </a>
             </li>
-
+            @endif
 
             <li class="nav-item ">
                 <a class="nav-link" href="./typography.html">
