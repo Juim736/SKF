@@ -26,7 +26,7 @@ class CommonFunction {
         if($employee) { 
             $time = Carbon::now();
             $morning = Carbon::create($time->year, $time->month, $time->day, 11, 13, 0); 
-            $evening = Carbon::create($time->year, $time->month, $time->day, 5, 55, 0);
+            $evening = Carbon::create($time->year, $time->month, $time->day, 23, 55, 0);
            if($time->between($morning, $evening, true)){
             return true;
            }
