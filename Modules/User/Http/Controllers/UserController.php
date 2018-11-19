@@ -112,4 +112,9 @@ class UserController extends Controller
         return false;
 
     }
+
+    public function myProfile(){
+        $user_id = Sentinel::getUser()->id;
+        return $user_id;
+    }
 }
