@@ -58,7 +58,7 @@
                   </p>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="myProfile">
-                  <a class="dropdown-item" href="#">
+                  <a class="dropdown-item" href="{{ url('user/my-profile') }}">
                     <i class="material-icons">perm_identity</i>
                   My Profile</a>
                   @if(CF::isEmployeeExitAttendace())
