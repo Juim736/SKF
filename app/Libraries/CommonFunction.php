@@ -16,6 +16,15 @@ use Modules\Employee\Entities\Employee;
 
 class CommonFunction {
 
+    public static function getUserId()
+    {
+        if (Sentinel::check()) {
+            return Sentinel::getUser()->id;
+        } else {
+            return 0;
+        }
+    }
+
     public static function isEmployeeExitAttendace(){
         $user_id = Sentinel::getUser()->id;
         $employee = Employee::leftjoin('attendances','employees.id','=', 'attendances.employee_id')
