@@ -2,8 +2,12 @@
 
 namespace Modules\Account\Providers;
 
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
+use Modules\Account\Entities\OfficeAccount;
 
 class AccountServiceProvider extends ServiceProvider
 {
@@ -26,6 +30,22 @@ class AccountServiceProvider extends ServiceProvider
         $this->registerViews();
         $this->registerFactories();
         $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
+
+
+        View::composer(['account::account','account::daily_account'], function ($view) {
+            $today =  Carbon::today();
+            $lastSevenDay =  Carbon::today()->subDays(7);
+            $firstDayOfMonth = Carbon::now()->startOfMonth();
+            $allCostData = DB::select('SELECT * FROM (
+                        SELECT SUM(cost_amount) as amount FROM office_accounts WHERE created_at > "'.$today.'"
+                         UNION All SELECT SUM(cost_amount) as amount FROM office_accounts   WHERE created_at > "'.$lastSevenDay.'" 
+                         UNION ALL SELECT SUM(cost_amount) as amount FROM office_accounts WHERE created_at > "'.$firstDayOfMonth.'" ) as demo_table');
+            $todayData = OfficeAccount::whereDate('created_at',$today)->orderby('created_at','desc')->get();
+            $weekData = OfficeAccount::whereDate('created_at','>',$lastSevenDay)->orderby('created_at','desc')->get();
+            $monthData = OfficeAccount::whereDate('created_at','>',$firstDayOfMonth)->orderby('created_at','desc')->get();
+            $view->with(compact('todayData','allCostData','weekData','monthData','firstDayOfMonth'));
+        });
+
     }
 
     /**
